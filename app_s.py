@@ -14,7 +14,7 @@ West Velachery, Chennai - 600042.
 GSTIN/UIN: 33AAGFK1394P1ZX
 State Name : Tamil Nadu, Code : 33
 """
-company_logo = 'mkstxbiolume.png'
+company_logo = 'mcktbiolume.png'
 photo_logo = '10.png'
 
 bank_details = """
