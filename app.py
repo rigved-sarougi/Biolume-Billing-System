@@ -5,7 +5,7 @@ from fpdf import FPDF
 from datetime import datetime
 
 # Load product data and Party data
-biolume_df = pd.read_csv('MKT+Biolume - Inventory System - Invoice (2).csv')
+biolume_df = pd.read_csv('MKT+Biolume - Inventory System - Invoice.csv')
 party_df = pd.read_csv('MKT+Biolume - Inventory System - Party (2).csv')
 
 # Company Details
@@ -87,7 +87,7 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
         quantity = quantities[idx]
         unit_price = float(product_data['Price'])
         discount = float(product_data['Discount'])
-        after_disc = unit_price * (1 - discount / 100)  # Recalculate discounted price
+        after_disc = float(product_data['Disc Price'])
         item_total_price = after_disc * quantity
 
         pdf.cell(10, 8, str(idx + 1), border=1)
@@ -104,7 +104,7 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
     pdf.ln(5)
     tax_rate = 0.18
     tax_amount = total_price * tax_rate
-    grand_total = round(total_price + tax_amount, 2)  # Proper rounding
+    grand_total = math.ceil(total_price + tax_amount)
 
     pdf.set_font("Arial", 'B', 10)
     pdf.cell(160, 10, "CGST (9%)", border=0, align='R')
