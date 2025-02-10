@@ -4,9 +4,8 @@ import math
 from fpdf import FPDF
 from datetime import datetime
 
-# Load product data and Party data
-biolume_df = pd.read_csv('DB Allgen Trading - Data.csv')
-party_df = pd.read_csv('MKT+Biolume - Inventory System - Party (2).csv')
+# Load product data
+biolume_df = pd.read_csv('MKT+Biolume - Inventory System - Invoice (2).csv')
 
 # Company Details
 company_name = "KS Agencies"
@@ -122,37 +121,21 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
 # Streamlit UI
 st.title("Biolume: Billing System")
 
-# Dropdown for selecting Party from CSV
-party_names = party_df['Party'].tolist()
-selected_party = st.selectbox("Select Party", party_names)
+# Input fields for Party details
+st.subheader("Party Details")
+customer_name = st.text_input("Enter Customer Name")
+gst_number = st.text_input("Enter GST Number")
+contact_number = st.text_input("Enter Contact Number")
+address = st.text_area("Enter Address", height=100)
 
-# Fetch Party details based on selection
-party_details = party_df[party_df['Party'] == selected_party].iloc[0]
-address = party_details['Address']
-gst_number = party_details['GSTIN/UN']
+# Date
+date = datetime.now().strftime("%d-%m-%Y")
+st.text(f"Date: {date}")
 
-# Customer Name is the same as Party
-customer_name = selected_party
-
-# Display the GSTIN in the form
-col1, col2 = st.columns(2)
-with col1:
-    st.text_input("Enter Customer Name", value=customer_name, disabled=True)
-with col2:
-    st.text_input("Enter GST Number", value=gst_number, disabled=True)
-
-col3, col4 = st.columns(2)
-with col3:
-    contact_number = st.text_input("Enter Contact Number")  # Define this field
-with col4:
-    date = datetime.now().strftime("%d-%m-%Y")
-    st.text(f"Date: {date}")
-
-# Display the address in the text area
-st.text_area("Address", value=address, height=100)
-
+# Product selection
 selected_products = st.multiselect("Select Products", biolume_df['Product Name'].tolist())
 
+# Quantity and Discount inputs for each product
 quantities = []
 discounts = []
 if selected_products:
@@ -165,10 +148,11 @@ if selected_products:
             discount = st.number_input(f"Discount (%) for {product}", min_value=0, max_value=100, value=0, step=1)
             discounts.append(discount)
 
+# Generate Invoice button
 if st.button("Generate Invoice"):
-    if selected_party and selected_products and quantities and contact_number:
+    if customer_name and gst_number and contact_number and address and selected_products and quantities:
         pdf = generate_invoice(customer_name, gst_number, contact_number, address, selected_products, quantities, discounts)
-        pdf_file = f"invoice_{selected_party}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
+        pdf_file = f"invoice_{customer_name}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
         pdf.output(pdf_file)
         with open(pdf_file, "rb") as f:
             st.download_button("Download Invoice", f, file_name=pdf_file)
