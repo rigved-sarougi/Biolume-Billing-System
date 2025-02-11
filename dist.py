@@ -14,8 +14,8 @@ Goregaon (EAST) Mumbai 400065.
 GSTIN/UIN: 27AASCA7650C1ZJ
 State Name : Mumbai, Code : 400065
 """
-company_logo = 'Untitled design (3).png'
-photo_logo = 'ALLGEN TRADING.png'
+company_logo = 'ALLGEN TRADING logo.png'
+photo_logo = 'ALLGEN TRADING gpay.png'
 
 bank_details = """
 
