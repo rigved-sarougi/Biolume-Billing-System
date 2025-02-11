@@ -23,7 +23,7 @@ bank_details = """
 
 HDFC Bank, Jogeshwari East Mumbai, Maharashtra: Ac No 50200045580571, IFSC code HDFC0001019 
 Mobile - 9819067929 / GPay / PhonePe 
-Delivery/Payment Support: +919094041611 Customer Support: +919311662808
+Delivery/Payment Support: +918657927412 Customer Support: +919311662808
 """
 
 # Custom PDF class
