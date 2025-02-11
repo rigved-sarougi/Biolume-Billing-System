@@ -15,7 +15,7 @@ GSTIN/UIN: 27AASCA7650C1ZJ
 State Name : Mumbai, Code : 400065
 """
 company_logo = 'mcktbiolume.png'
-photo_logo = '10.png'
+photo_logo = 'ALLGEN TRADING.png'
 
 bank_details = """
 
