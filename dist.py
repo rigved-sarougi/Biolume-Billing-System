@@ -8,20 +8,20 @@ from datetime import datetime
 biolume_df = pd.read_csv('DB Allgen Trading - Data.csv')
 
 # Company Details
-company_name = "KS Agencies"
-company_address = """61A/42, Karunanidhi Street, Nehru Nagar,
-West Velachery, Chennai - 600042.
-GSTIN/UIN: 33AAGFK1394P1ZX
-State Name : Tamil Nadu, Code : 33
+company_name = "ALLGEN TRADING INTERNATIONAL (OPC) PVT LTD"
+company_address = """23B, Mastermind IV, Royal Palms, Aarey Milk colony,
+Goregaon (EAST) Mumbai 400065.
+GSTIN/UIN: 27AASCA7650C1ZJ
+State Name : Mumbai, Code : 400065
 """
 company_logo = 'mcktbiolume.png'
 photo_logo = '10.png'
 
 bank_details = """
-For Rtgs / KS Agencies
-Kotak Mahindra Bank Velachery branch
-Ac No 0012490288, IFSC code KKBK0000473 
-Mobile - 9444454461 / GPay / PhonePe / Niyas
+
+HDFC Bank, Jogeshwari East Mumbai, Maharashtra
+Ac No 50200045580571, IFSC code HDFC0001019 
+Mobile - 8657927411 / GPay / PhonePe 
 Delivery/Payment Support: +919094041611
 Customer Support: +919311662808
 """
