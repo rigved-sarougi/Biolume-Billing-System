@@ -5,7 +5,7 @@ from fpdf import FPDF
 from datetime import datetime
 
 # Load product data
-biolume_df = pd.read_csv('DB Allgen Trading - Data.csv')
+biolume_df = pd.read_csv('DB Allgen Trading - Data (1).csv')
 
 # Company Details
 company_name = "ALLGEN TRADING INTERNATIONAL (OPC) PVT LTD"
