@@ -119,7 +119,7 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
     return pdf
 
 # Streamlit UI
-st.title("Biolume: Billing System")
+st.title("Biolume + ALLGEN TRADING: Billing System")
 
 # Input fields for Party details
 st.subheader("Party Details")
