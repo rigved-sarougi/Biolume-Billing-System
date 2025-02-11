@@ -15,7 +15,7 @@ GSTIN/UIN: 27AASCA7650C1ZJ
 State Name : Mumbai, Code : 400065
 """
 company_logo = 'ALLGEN TRADING logo.png'
-photo_logo = 'ALLGEN TRADING gpay.png'
+photo_logo = 'ALLGEN_TRADING_gpay-removebg-preview.png'
 
 bank_details = """
 
