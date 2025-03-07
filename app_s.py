@@ -123,62 +123,55 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
 # Generate Excel
 def generate_excel(customer_name, gst_number, contact_number, address, selected_products, quantities):
     output = io.BytesIO()
-    writer = pd.ExcelWriter(output, engine='xlsxwriter')
-    workbook = writer.book
-    worksheet = workbook.add_worksheet('Invoice Details')
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        worksheet = workbook.add_worksheet('Invoice Details')
 
-    # Write header
-    worksheet.write(0, 0, 'Name')
-    worksheet.write(0, 1, customer_name)
-    worksheet.write(1, 0, 'Address')
-    worksheet.write(1, 1, address)
-    worksheet.write(2, 0, 'GST Number')
-    worksheet.write(2, 1, gst_number)
-    worksheet.write(3, 0, 'Contact Number')
-    worksheet.write(3, 1, contact_number)
+        # Write header
+        worksheet.write(0, 0, 'Biolume Skin Science')
+        worksheet.write(0, 6, 'SALE ORDER FORM')
+        worksheet.write(2, 0, 'ITEM #')
+        worksheet.write(2, 1, 'DESCRIPTION')
+        worksheet.write(2, 2, 'QTY')
+        worksheet.write(2, 3, 'MRP')
+        worksheet.write(2, 4, 'DISCOUNT')
+        worksheet.write(2, 5, 'After Disc.')
+        worksheet.write(2, 6, 'TOTAL')
 
-    # Write product details
-    worksheet.write(5, 0, 'S.No')
-    worksheet.write(5, 1, 'Description of Goods')
-    worksheet.write(5, 2, 'HSN/SAC')
-    worksheet.write(5, 3, 'GST Rate')
-    worksheet.write(5, 4, 'Qty')
-    worksheet.write(5, 5, 'Rate')
-    worksheet.write(5, 6, 'Disc. %')
-    worksheet.write(5, 7, 'Amount')
+        # Write product details
+        row = 3
+        total_price = 0
+        for idx, product in enumerate(selected_products):
+            product_data = biolume_df[biolume_df['Product Name'] == product].iloc[0]
+            quantity = quantities[idx]
+            unit_price = float(product_data['Price'])
+            discount = float(product_data['Discount'])
+            after_disc = float(product_data['Disc Price'])
+            item_total_price = after_disc * quantity
 
-    total_price = 0
-    for idx, product in enumerate(selected_products):
-        product_data = biolume_df[biolume_df['Product Name'] == product].iloc[0]
-        quantity = quantities[idx]
-        unit_price = float(product_data['Price'])
-        discount = float(product_data['Discount'])
-        after_disc = float(product_data['Disc Price'])
-        item_total_price = after_disc * quantity
+            worksheet.write(row, 0, product_data['Product Code'])
+            worksheet.write(row, 1, product)
+            worksheet.write(row, 2, quantity)
+            worksheet.write(row, 3, unit_price)
+            worksheet.write(row, 4, discount)
+            worksheet.write(row, 5, after_disc)
+            worksheet.write(row, 6, item_total_price)
+            total_price += item_total_price
+            row += 1
 
-        worksheet.write(6 + idx, 0, idx + 1)
-        worksheet.write(6 + idx, 1, product)
-        worksheet.write(6 + idx, 2, "3304")
-        worksheet.write(6 + idx, 3, "18%")
-        worksheet.write(6 + idx, 4, quantity)
-        worksheet.write(6 + idx, 5, unit_price)
-        worksheet.write(6 + idx, 6, discount)
-        worksheet.write(6 + idx, 7, item_total_price)
-        total_price += item_total_price
+        # Write total details
+        worksheet.write(row, 5, 'Total')
+        worksheet.write(row, 6, total_price)
 
-    # Write total details
-    tax_rate = 0.18
-    tax_amount = total_price * tax_rate
-    grand_total = math.ceil(total_price + tax_amount)
+        # Write party details
+        row += 2
+        worksheet.write(row, 0, 'Party: ' + customer_name)
+        worksheet.write(row + 1, 0, 'Date: ' + datetime.now().strftime("%d-%m-%Y"))
+        worksheet.write(row + 2, 0, 'GSTIN/UN: ' + str(gst_number))
+        worksheet.write(row + 3, 0, 'Contact: ' + contact_number)
+        worksheet.write(row + 4, 0, 'Address:')
+        worksheet.write(row + 5, 0, address)
 
-    worksheet.write(6 + len(selected_products), 0, 'CGST (9%)')
-    worksheet.write(6 + len(selected_products), 1, tax_amount / 2)
-    worksheet.write(7 + len(selected_products), 0, 'SGST (9%)')
-    worksheet.write(7 + len(selected_products), 1, tax_amount / 2)
-    worksheet.write(8 + len(selected_products), 0, 'Grand Total')
-    worksheet.write(8 + len(selected_products), 1, grand_total)
-
-    writer.save()
     output.seek(0)
     return output
 
