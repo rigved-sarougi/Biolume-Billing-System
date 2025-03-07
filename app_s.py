@@ -3,6 +3,7 @@ import pandas as pd
 import math
 from fpdf import FPDF
 from datetime import datetime
+import io
 
 # Load product data and Party data
 biolume_df = pd.read_csv('MKT+Biolume - Inventory System - Invoice (2).csv')
@@ -119,6 +120,68 @@ def generate_invoice(customer_name, gst_number, contact_number, address, selecte
     
     return pdf
 
+# Generate Excel
+def generate_excel(customer_name, gst_number, contact_number, address, selected_products, quantities):
+    output = io.BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    workbook = writer.book
+    worksheet = workbook.add_worksheet('Invoice Details')
+
+    # Write header
+    worksheet.write(0, 0, 'Name')
+    worksheet.write(0, 1, customer_name)
+    worksheet.write(1, 0, 'Address')
+    worksheet.write(1, 1, address)
+    worksheet.write(2, 0, 'GST Number')
+    worksheet.write(2, 1, gst_number)
+    worksheet.write(3, 0, 'Contact Number')
+    worksheet.write(3, 1, contact_number)
+
+    # Write product details
+    worksheet.write(5, 0, 'S.No')
+    worksheet.write(5, 1, 'Description of Goods')
+    worksheet.write(5, 2, 'HSN/SAC')
+    worksheet.write(5, 3, 'GST Rate')
+    worksheet.write(5, 4, 'Qty')
+    worksheet.write(5, 5, 'Rate')
+    worksheet.write(5, 6, 'Disc. %')
+    worksheet.write(5, 7, 'Amount')
+
+    total_price = 0
+    for idx, product in enumerate(selected_products):
+        product_data = biolume_df[biolume_df['Product Name'] == product].iloc[0]
+        quantity = quantities[idx]
+        unit_price = float(product_data['Price'])
+        discount = float(product_data['Discount'])
+        after_disc = float(product_data['Disc Price'])
+        item_total_price = after_disc * quantity
+
+        worksheet.write(6 + idx, 0, idx + 1)
+        worksheet.write(6 + idx, 1, product)
+        worksheet.write(6 + idx, 2, "3304")
+        worksheet.write(6 + idx, 3, "18%")
+        worksheet.write(6 + idx, 4, quantity)
+        worksheet.write(6 + idx, 5, unit_price)
+        worksheet.write(6 + idx, 6, discount)
+        worksheet.write(6 + idx, 7, item_total_price)
+        total_price += item_total_price
+
+    # Write total details
+    tax_rate = 0.18
+    tax_amount = total_price * tax_rate
+    grand_total = math.ceil(total_price + tax_amount)
+
+    worksheet.write(6 + len(selected_products), 0, 'CGST (9%)')
+    worksheet.write(6 + len(selected_products), 1, tax_amount / 2)
+    worksheet.write(7 + len(selected_products), 0, 'SGST (9%)')
+    worksheet.write(7 + len(selected_products), 1, tax_amount / 2)
+    worksheet.write(8 + len(selected_products), 0, 'Grand Total')
+    worksheet.write(8 + len(selected_products), 1, grand_total)
+
+    writer.save()
+    output.seek(0)
+    return output
+
 # Streamlit UI
 st.title("Biolume: Billing System")
 
@@ -164,7 +227,13 @@ if st.button("Generate Invoice"):
         pdf = generate_invoice(customer_name, gst_number, contact_number, address, selected_products, quantities)
         pdf_file = f"invoice_{selected_party}_{datetime.now().strftime('%Y%m%d%H%M%S')}.pdf"
         pdf.output(pdf_file)
+        
+        excel_file = generate_excel(customer_name, gst_number, contact_number, address, selected_products, quantities)
+        excel_file_name = f"invoice_{selected_party}_{datetime.now().strftime('%Y%m%d%H%M%S')}.xlsx"
+        
         with open(pdf_file, "rb") as f:
-            st.download_button("Download Invoice", f, file_name=pdf_file)
+            st.download_button("Download Invoice PDF", f, file_name=pdf_file)
+        
+        st.download_button("Download Invoice Excel", excel_file, file_name=excel_file_name, mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     else:
         st.error("Please fill all fields and select products.")
