@@ -22,7 +22,7 @@ For Rtgs / KS Agencies
 Kotak Mahindra Bank Velachery branch
 Ac No 0012490288, IFSC code KKBK0000473 
 Mobile - 9444454461 / GPay / PhonePe / Niyas
-Delivery/Payment Support: +919094041611
+Delivery/Payment Support: +916383775830
 Customer Support: +919311662808
 """
 
