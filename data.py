@@ -15,7 +15,7 @@ GSTIN/UIN: 33AAGFK1394P1ZX
 State Name : Tamil Nadu, Code : 33
 """
 company_logo = 'mcktbiolume.png'
-photo_logo = '10.png'
+photo_logo = '21.png'
 
 bank_details = """
 For Rtgs / KS Agencies
